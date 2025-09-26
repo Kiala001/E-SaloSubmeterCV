@@ -1,14 +1,13 @@
-package tests
+package services
 
 import (
 	"esalo/adapters"
-	"esalo/services"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
 )
 
-func TestValidarCV(t *testing.T) {
+func TestValidatedCV(t *testing.T) {
 
 	t.Run("You must publish the CVValidado event", func(t *testing.T) {
 		EventBus := event.NewEventBus()
@@ -24,26 +23,26 @@ func TestValidarCV(t *testing.T) {
 		CVRepository := adapters.NewInmemoryCVRepository()
 		cv := CVRepository.GetCVById("CV001")
 
-		CVService := services.NewCVValidationService(CVRepository, EventBus)
+		CVService := NewCVValidationService(CVRepository, EventBus)
 		CVService.ValidarCV(cv)
 
 		if !isPublished {
 			t.Errorf("I was hoping that the CVValidado event would be published.")
 		}
 	})
-	
+
 	t.Run("You must update the CV status to valid.", func(t *testing.T) {
 		EventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
 		cv := CVRepository.GetCVById("CV001")
 
-		CVService := services.NewCVValidationService(CVRepository, EventBus)
+		CVService := NewCVValidationService(CVRepository, EventBus)
 		CVService.ValidarCV(cv)
 
 		CvActualizado := CVRepository.GetCVById(cv.Id)
 
-		if CvActualizado.Estado != "Válido" {
+		if CvActualizado.Estado != "Validado" {
 			t.Errorf("Espected %s, but got %s", "Valido", CvActualizado.Estado)
 		}
 	})

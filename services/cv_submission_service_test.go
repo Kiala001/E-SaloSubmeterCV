@@ -1,14 +1,13 @@
-package tests
+package services
 
 import (
 	"esalo/adapters"
-	"esalo/services"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
 )
 
-func TestSubmeterCV(t *testing.T) {
+func TestSubmissionCV(t *testing.T) {
 	t.Run("You must publish the CVSubmetido event", func (t *testing.T)  {
 		EventBus := event.NewEventBus()
 		isPublished := false
@@ -20,11 +19,10 @@ func TestSubmeterCV(t *testing.T) {
 		})
 		EventBus.Subscribe("CVSubmetido", eventHandler)
 
-
 		CVRepository := adapters.NewInmemoryCVRepository()
 		cv := CVRepository.GetCVById("CV002")
 
-		CVService := services.NewCVSubmissionService(CVRepository, EventBus)
+		CVService := NewCVSubmissionService(CVRepository, EventBus)
 		CVService.SubmeterCV(cv)
 
 		if !isPublished {
@@ -38,12 +36,12 @@ func TestSubmeterCV(t *testing.T) {
 		CVRepository := adapters.NewInmemoryCVRepository()
 		cv := CVRepository.GetCVById("CV002")
 
-		CVService := services.NewCVSubmissionService(CVRepository, EventBus)
+		CVService := NewCVSubmissionService(CVRepository, EventBus)
 		CVService.SubmeterCV(cv)
 
 		CvActualizado := CVRepository.GetCVById(cv.Id)
 
-		if CvActualizado.Estado != "Disponível" {
+		if CvActualizado.Estado != "Submetido" {
 			t.Errorf("Espected %s, but got %s", "Disponível", CvActualizado.Estado)
 		}
 	})
@@ -54,10 +52,10 @@ func TestSubmeterCV(t *testing.T) {
 		CVRepository := adapters.NewInmemoryCVRepository()
 		cv := CVRepository.GetCVById("CV001")
 
-		CVService := services.NewCVSubmissionService(CVRepository, EventBus)
+		CVService := NewCVSubmissionService(CVRepository, EventBus)
 		ErrOrNil := CVService.SubmeterCV(cv)
 
-		if ErrOrNil != nil {
+		if ErrOrNil == nil {
 			t.Errorf("Espected nil, but got %v", ErrOrNil)
 		}
 	})

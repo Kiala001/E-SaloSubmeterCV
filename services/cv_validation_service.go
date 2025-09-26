@@ -21,7 +21,7 @@ func (s *CVValidationService) ValidarCV(cv domain.CV) error {
 
 	s.Repository.Update(cv)
 
-	e := event.New("CVValidado", event.WithPayload(cv))	
-	cv.PublishEvent(s.Bus, e)
+	events := cv.PullEvents()
+	cv.PublishEvent(s.Bus, events[0])
 	return nil
 }

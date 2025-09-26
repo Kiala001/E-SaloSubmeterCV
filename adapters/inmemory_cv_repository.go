@@ -8,8 +8,8 @@ type InmemoryCVRepository struct {
 
 func NewInmemoryCVRepository() *InmemoryCVRepository {
 	return &InmemoryCVRepository{CVs: map[string]domain.CV{
-		"CV001": {Id: "CV001", Estado: "Ativo"},
-		"CV002": {Id: "CV002", Estado: "Válido"},
+		"CV001": {Id: "CV001", Estado: ""},
+		"CV002": {Id: "CV002", Estado: "Validado"},
 	}}
 }
 
