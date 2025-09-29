@@ -43,7 +43,7 @@ func TestValidatedCV(t *testing.T) {
 		CvActualizado := CVRepository.GetCVById(cv.Id)
 
 		if CvActualizado.Estado != "Validado" {
-			t.Errorf("Espected %s, but got %s", "Valido", CvActualizado.Estado)
+			t.Errorf("Expected %s, but got %s", "Valido", CvActualizado.Estado)
 		}
 	})
 }

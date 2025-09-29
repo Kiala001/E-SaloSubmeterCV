@@ -42,7 +42,7 @@ func TestSubmissionCV(t *testing.T) {
 		CvActualizado := CVRepository.GetCVById(cv.Id)
 
 		if CvActualizado.Estado != "Submetido" {
-			t.Errorf("Espected %s, but got %s", "Disponível", CvActualizado.Estado)
+			t.Errorf("Expected %s, but got %s", "Disponível", CvActualizado.Estado)
 		}
 	})
 
@@ -56,7 +56,7 @@ func TestSubmissionCV(t *testing.T) {
 		ErrOrNil := CVService.SubmeterCV(cv)
 
 		if ErrOrNil == nil {
-			t.Errorf("Espected nil, but got %v", ErrOrNil)
+			t.Errorf("Expected nil, but got %v", ErrOrNil)
 		}
 	})
 }

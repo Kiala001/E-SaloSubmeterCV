@@ -19,7 +19,7 @@ func TestRegistarCadastrarCandidato(t *testing.T){
 
 		length := candidatoRepository.Length()
 		if length != 1 {
-			t.Errorf("Espected %d, but got %d", 1, length)
+			t.Errorf("Expected %d, but got %d", 1, length)
 		}
 	})
 	
@@ -68,7 +68,7 @@ func TestRegistarCadastrarCandidato(t *testing.T){
 		
 		length := candidatoRepository.Length()
 		if length != 1 {
-			t.Errorf("Espected %d, but got %d", 1, length)
+			t.Errorf("Expected %d, but got %d", 1, length)
 		}	
 	})
 	
@@ -96,7 +96,7 @@ func TestRegistarCadastrarCandidato(t *testing.T){
 		
 		length := candidatoRepository.Length()
 		if length != 0 {
-			t.Errorf("Espected %d, but got %d", 0, length)
+			t.Errorf("Expected %d, but got %d", 0, length)
 		}	
 	})
 }
