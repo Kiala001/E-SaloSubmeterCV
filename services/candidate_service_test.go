@@ -8,95 +8,198 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 )
 
-func TestRegistarCadastrarCandidato(t *testing.T){
-	t.Run("You must register a candidate successfully.", func (t *testing.T)  {
+func TestRegisterCandidate(t *testing.T) {
+	t.Run("You must register a candidate successfully.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
-		candidato := domain.NewCandidato("Candidato001", "Silvano Varela", "CV001")
-		
-		candidatoRepository := adapters.NewInmemoryCandidatoRepository()
-		candidatoService := NewCandidatoService(candidatoRepository, eventBus)
-		candidatoService.RegistarCadastrarCandidato(candidato)
 
-		length := candidatoRepository.Length()
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "CV001",
+		}
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+		candidateService.RegisterCandidate(Candidate)
+
+		length := candidateRepository.Length()
 		if length != 1 {
 			t.Errorf("Expected %d, but got %d", 1, length)
 		}
 	})
-	
-	t.Run("You must publish the CandidatoRegistadoCadastrado event", func (t *testing.T)  {
+
+	t.Run("You must publish the CandidateRegistadoCadastrado event", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 		isPublished := false
 
 		var eventHandler = event.HandlerFunc(func(e event.Event) {
-			if e.Name() == "CandidatoRegistadoCadastrado" {
+			if e.Name() == "CandidateRegistadoCadastrado" {
 				isPublished = true
 			}
 		})
-		eventBus.Subscribe("CandidatoRegistadoCadastrado", eventHandler)
-		
-		candidato := domain.NewCandidato("Candidato002", "Rui Osvaldo", "CV002")
+		eventBus.Subscribe("CandidateRegistadoCadastrado", eventHandler)
 
-		candidatoRepository := adapters.NewInmemoryCandidatoRepository()
-		candidatoService := NewCandidatoService(candidatoRepository, eventBus)
-		candidatoService.RegistarCadastrarCandidato(candidato)
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "CV001",
+		}
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+		candidateService.RegisterCandidate(Candidate)
 
 		if !isPublished {
-			t.Error("I was hoping that the CandidatoRegistadoCadastrado event would be published.")
+			t.Error("I was hoping that the CandidateRegistadoCadastrado event would be published.")
 		}
 	})
 
-	t.Run("You must register candidate after submitting the CV.", func (t *testing.T)  {
+	t.Run("You must register a candidate after validating the CV.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 
-		cvRepository := adapters.NewInmemoryCVRepository()
-		cv := cvRepository.GetCVById("CV002")
-		candidato := domain.NewCandidato("Candidato003", "Kiala Emanuel", cv.Id)
+		CVRepository := adapters.NewInmemoryCVRepository()
+		cv := CVRepository.GetCVById("CV001")
 
-		cvService := NewCVSubmissionService(cvRepository, eventBus)
+		CVService := NewCVValidationService(CVRepository, eventBus)
 
-		candidatoRepository := adapters.NewInmemoryCandidatoRepository()
-		candidatoService := NewCandidatoService(candidatoRepository, eventBus)
-		
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     cv.Id,
+		}
+
 		var eventHandlerCVSubmetido = event.HandlerFunc(func(e event.Event) {
-			if e.Name() == "CVSubmetido" {
-				candidatoService.RegistarCadastrarCandidato(candidato)
+			if e.Name() == "CVValidado" {
+				candidateService.RegisterCandidate(Candidate)
 			}
 		})
-		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
-		
-		cvService.SubmeterCV(cv)
-		
-		length := candidatoRepository.Length()
+		eventBus.Subscribe("CVValidado", eventHandlerCVSubmetido)
+
+		CVService.ValidateCV(cv)
+
+		length := candidateRepository.Length()
 		if length != 1 {
 			t.Errorf("Expected %d, but got %d", 1, length)
-		}	
+		}
 	})
-	
-	t.Run("You must not register candidate if the CV is not submitted.", func (t *testing.T)  {
 
+	t.Run("You must register candidate after submitting the CV.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 
-		cvRepository := adapters.NewInmemoryCVRepository()
-		cv := cvRepository.GetCVById("CV001")
-		candidato := domain.NewCandidato("Candidato003", "Kiala Emanuel", cv.Id)
+		CVRepository := adapters.NewInmemoryCVRepository()
+		cv := CVRepository.GetCVById("CV002")
 
-		cvService := NewCVSubmissionService(cvRepository, eventBus)
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "CV001",
+		}
 
-		candidatoRepository := adapters.NewInmemoryCandidatoRepository()
-		candidatoService := NewCandidatoService(candidatoRepository, eventBus)
-		
+		CVService := NewCVSubmissionService(CVRepository, eventBus)
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+
 		var eventHandlerCVSubmetido = event.HandlerFunc(func(e event.Event) {
 			if e.Name() == "CVSubmetido" {
-				candidatoService.RegistarCadastrarCandidato(candidato)
+				candidateService.RegisterCandidate(Candidate)
 			}
 		})
 		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
-		
-		cvService.SubmeterCV(cv)
-		
-		length := candidatoRepository.Length()
+
+		CVService.SubmitCV(cv)
+
+		length := candidateRepository.Length()
+		if length != 1 {
+			t.Errorf("Expected %d, but got %d", 1, length)
+		}
+	})
+
+	t.Run("You must not register candidate if the CV is not submitted.", func(t *testing.T) {
+
+		eventBus := event.NewEventBus()
+
+		CVRepository := adapters.NewInmemoryCVRepository()
+		cv := CVRepository.GetCVById("CV001")
+
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "CV001",
+		}
+
+		CVService := NewCVSubmissionService(CVRepository, eventBus)
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+
+		var eventHandlerCVSubmetido = event.HandlerFunc(func(e event.Event) {
+			if e.Name() == "CVSubmetido" {
+				candidateService.RegisterCandidate(Candidate)
+			}
+		})
+		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
+
+		CVService.SubmitCV(cv)
+
+		length := candidateRepository.Length()
 		if length != 0 {
 			t.Errorf("Expected %d, but got %d", 0, length)
-		}	
+		}
+	})
+
+	t.Run("You must register as a candidate after submitting your CV", func(t *testing.T) {
+		eventBus := event.NewEventBus()
+		isPublished := false
+
+		CVRepository := adapters.NewInmemoryCVRepository()
+
+		CV := CVRepository.GetCVById("CV002")
+		CVService := NewCVSubmissionService(CVRepository, eventBus)
+
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "CV001",
+		}
+
+		CandidateRepository := adapters.NewInmemorycandidateRepository()
+		CandidateService := NewcandidateService(CandidateRepository, eventBus)
+
+		var eventHandlerCVSubmetido = event.HandlerFunc(func(e event.Event) {
+			if e.Name() == "CVSubmetido" {
+				CandidateService.RegisterCandidate(Candidate)
+			}
+		})
+
+		var eventHandlerCandidateRegistadoCadastrado = event.HandlerFunc(func(e event.Event) {
+			if e.Name() == "CandidateRegistadoCadastrado" {
+				isPublished = true
+			}
+		})
+
+		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
+		eventBus.Subscribe("CandidateRegistadoCadastrado", eventHandlerCandidateRegistadoCadastrado)
+
+		CVService.SubmitCV(CV)
+
+		if !isPublished {
+			t.Errorf("I was hoping that the CandidateRegistadoCadastrado event would be published.")
+		}
 	})
 }

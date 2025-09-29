@@ -1,6 +1,5 @@
 package services
 
-
 import (
 	"esalo/domain"
 	"esalo/ports"
@@ -17,17 +16,17 @@ func NewCVSubmissionService(repo ports.ICVRepository, bus event.Bus) *CVSubmissi
 	return &CVSubmissionService{Repository: repo, Bus: bus}
 }
 
-func (s *CVSubmissionService) SubmeterCV(CV domain.CV) error {
+func (s *CVSubmissionService) SubmitCV(CV domain.CV) error {
 
-	error := CV.Submeter()
+	error := CV.Submit()
 	if error != nil {
 		return error
 	}
 
 	s.Repository.Update(CV)
-	
+
 	events := CV.PullEvents()
 	CV.PublishEvent(s.Bus, events[0])
-	
+
 	return nil
 }

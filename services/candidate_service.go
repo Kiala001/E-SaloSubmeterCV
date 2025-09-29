@@ -7,22 +7,25 @@ import (
 	"github.com/kindalus/godx/pkg/event"
 )
 
-
-type CandidatoService struct {
-	repository ports.ICandidatoRepository
-	eventBus event.Bus
+type candidateService struct {
+	repository ports.IcandidateRepository
+	eventBus   event.Bus
 }
 
-func NewCandidatoService(repo ports.ICandidatoRepository, eventBus event.Bus) *CandidatoService {
-	return &CandidatoService{repository: repo, eventBus: eventBus}
+func NewcandidateService(repo ports.IcandidateRepository, eventBus event.Bus) *candidateService {
+	return &candidateService{repository: repo, eventBus: eventBus}
 }
 
-func (s *CandidatoService) RegistarCadastrarCandidato(candidato *domain.Candidato) error {
-	s.repository.Save(candidato)	
+func (s *candidateService) RegisterCandidate(CandidateDTO domain.CandidateDTO) error {
+	Candidate, err := domain.NewCandidate(CandidateDTO.Id, CandidateDTO.Name, CandidateDTO.Email, CandidateDTO.Password, CandidateDTO.CVId)
+	if err != nil {
+		return err
+	}
 
-	event := candidato.PullEvents()
-	
-	candidato.PublishEvents(s.eventBus, event[0])
-	
+	s.repository.Save(Candidate)
+
+	event := Candidate.PullEvents()
+
+	Candidate.PublishEvents(s.eventBus, event[0])
 	return nil
 }

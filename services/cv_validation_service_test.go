@@ -24,26 +24,27 @@ func TestValidatedCV(t *testing.T) {
 		cv := CVRepository.GetCVById("CV001")
 
 		CVService := NewCVValidationService(CVRepository, EventBus)
-		CVService.ValidarCV(cv)
+		CVService.ValidateCV(cv)
 
 		if !isPublished {
 			t.Errorf("I was hoping that the CVValidado event would be published.")
 		}
 	})
 
-	t.Run("You must update the CV status to valid.", func(t *testing.T) {
+	t.Run("You must update the CV status to validated.", func(t *testing.T) {
 		EventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
 		cv := CVRepository.GetCVById("CV001")
 
 		CVService := NewCVValidationService(CVRepository, EventBus)
-		CVService.ValidarCV(cv)
+		CVService.ValidateCV(cv)
 
-		CvActualizado := CVRepository.GetCVById(cv.Id)
+		UpdatedCV := CVRepository.GetCVById(cv.Id)
 
-		if CvActualizado.Estado != "Validado" {
-			t.Errorf("Expected %s, but got %s", "Valido", CvActualizado.Estado)
+		if UpdatedCV.Status != "Validado" {
+			t.Errorf("Expected %s, but got %s", "Validado", UpdatedCV.Status)
 		}
 	})
+
 }

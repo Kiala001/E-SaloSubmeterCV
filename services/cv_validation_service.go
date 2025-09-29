@@ -16,8 +16,8 @@ func NewCVValidationService(repo ports.ICVRepository, bus event.Bus) *CVValidati
 	return &CVValidationService{Repository: repo, Bus: bus}
 }
 
-func (s *CVValidationService) ValidarCV(cv domain.CV) error {
-	cv.Validar()
+func (s *CVValidationService) ValidateCV(cv domain.CV) error {
+	cv.Validate()
 
 	s.Repository.Update(cv)
 
