@@ -35,11 +35,11 @@ func TestRegisterCandidate(t *testing.T) {
 		isPublished := false
 
 		var eventHandler = event.HandlerFunc(func(e event.Event) {
-			if e.Name() == "CandidateRegistadoCadastrado" {
+			if e.Name() == "CandidatoRegistadoCadastrado" {
 				isPublished = true
 			}
 		})
-		eventBus.Subscribe("CandidateRegistadoCadastrado", eventHandler)
+		eventBus.Subscribe("CandidatoRegistadoCadastrado", eventHandler)
 
 		Candidate := domain.CandidateDTO{
 			Id:       "Candidate003",
@@ -188,18 +188,18 @@ func TestRegisterCandidate(t *testing.T) {
 		})
 
 		var eventHandlerCandidateRegistadoCadastrado = event.HandlerFunc(func(e event.Event) {
-			if e.Name() == "CandidateRegistadoCadastrado" {
+			if e.Name() == "CandidatoRegistadoCadastrado" {
 				isPublished = true
 			}
 		})
 
 		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
-		eventBus.Subscribe("CandidateRegistadoCadastrado", eventHandlerCandidateRegistadoCadastrado)
+		eventBus.Subscribe("CandidatoRegistadoCadastrado", eventHandlerCandidateRegistadoCadastrado)
 
 		CVService.SubmitCV(CV)
 
 		if !isPublished {
-			t.Errorf("I was hoping that the CandidateRegistadoCadastrado event would be published.")
+			t.Errorf("I was hoping that the CandidatoRegistadoCadastrado event would be published.")
 		}
 	})
 }

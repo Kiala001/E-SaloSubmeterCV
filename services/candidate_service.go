@@ -8,19 +8,23 @@ import (
 )
 
 type candidateService struct {
-	repository ports.IcandidateRepository
+	repository ports.CandidateRepository
 	eventBus   event.Bus
 }
 
-func NewcandidateService(repo ports.IcandidateRepository, eventBus event.Bus) *candidateService {
+func NewcandidateService(repo ports.CandidateRepository, eventBus event.Bus) *candidateService {
 	return &candidateService{repository: repo, eventBus: eventBus}
 }
 
 func (s *candidateService) RegisterCandidate(CandidateDTO domain.CandidateDTO) error {
-	Candidate, err := domain.NewCandidate(CandidateDTO.Id, CandidateDTO.Name, CandidateDTO.Email, CandidateDTO.Password, CandidateDTO.CVId)
-	if err != nil {
-		return err
-	}
+	email, err := domain.NewEmail(CandidateDTO.Email)
+	if err != nil {	return err }
+
+	password, err := domain.NewPassword(CandidateDTO.Password)
+	if err != nil {	return err }
+
+	Candidate, err := domain.NewCandidate(CandidateDTO.Id, CandidateDTO.Name, email, password, CandidateDTO.CVId)
+	if err != nil {	return err	}
 
 	s.repository.Save(Candidate)
 

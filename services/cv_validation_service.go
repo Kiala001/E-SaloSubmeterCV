@@ -9,10 +9,10 @@ import (
 
 type CVValidationService struct {
 	Bus        event.Bus
-	Repository ports.ICVRepository
+	Repository ports.CVRepository
 }
 
-func NewCVValidationService(repo ports.ICVRepository, bus event.Bus) *CVValidationService {
+func NewCVValidationService(repo ports.CVRepository, bus event.Bus) *CVValidationService {
 	return &CVValidationService{Repository: repo, Bus: bus}
 }
 
