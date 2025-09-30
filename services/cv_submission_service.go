@@ -1,7 +1,7 @@
 package services
 
 import (
-	"esalo/domain"
+	"errors"
 	"esalo/ports"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -16,14 +16,14 @@ func NewCVSubmissionService(repo ports.CVRepository, bus event.Bus) *CVSubmissio
 	return &CVSubmissionService{Repository: repo, Bus: bus}
 }
 
-func (s *CVSubmissionService) SubmitCV(CV domain.CV) error {
+func (s *CVSubmissionService) SubmitCV(CvId string) error {
+	CV, exists := s.Repository.GetById(CvId)
+	if !exists { return errors.New("CV not found") }
 
-	error := CV.Submit()
-	if error != nil {
-		return error
-	}
+	errOrNil := CV.Submit()
+	if errOrNil != nil {return errOrNil	}
 
-	s.Repository.Update(CV)
+	s.Repository.Save(CV)
 
 	events := CV.PullEvents()
 	CV.PublishEvent(s.Bus, events[0])

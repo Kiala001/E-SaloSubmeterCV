@@ -3,6 +3,6 @@ package ports
 import "esalo/domain"
 
 type CVRepository interface {
-	Update(cv domain.CV) error
-	GetCVById(id string) domain.CV
+	Save(cv domain.CV) error
+	GetById(id string) (domain.CV, bool)
 }

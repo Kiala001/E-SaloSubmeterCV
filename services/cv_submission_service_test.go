@@ -20,29 +20,27 @@ func TestSubmissionCV(t *testing.T) {
 		EventBus.Subscribe("CVSubmetido", eventHandler)
 
 		CVRepository := adapters.NewInmemoryCVRepository()
-		cv := CVRepository.GetCVById("CV002")
 
 		CVService := NewCVSubmissionService(CVRepository, EventBus)
-		CVService.SubmitCV(cv)
+		CVService.SubmitCV("CV002")
 
 		if !isPublished {
 			t.Errorf("I was hoping that the CVSubmetido event would be published.")
 		}
 	})
 
-	t.Run("You must update th CV status to Available.", func(t *testing.T) {
+	t.Run("You must Save th CV status to Available.", func(t *testing.T) {
 		EventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
-		cv := CVRepository.GetCVById("CV002")
 
 		CVService := NewCVSubmissionService(CVRepository, EventBus)
-		CVService.SubmitCV(cv)
+		CVService.SubmitCV("CV002")
 
-		UpdatedCV := CVRepository.GetCVById(cv.Id)
+		updatedCV, _ := CVRepository.GetById("CV002")
 
-		if UpdatedCV.Status != "Submetido" {
-			t.Errorf("Expected %s, but got %s", "Disponível", UpdatedCV.Status)
+		if updatedCV.Status != "Submetido" {
+			t.Errorf("Expected %s, but got %s", "Disponível", updatedCV.Status)
 		}
 	})
 
@@ -50,13 +48,24 @@ func TestSubmissionCV(t *testing.T) {
 		EventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
-		cv := CVRepository.GetCVById("CV001")
 
 		CVService := NewCVSubmissionService(CVRepository, EventBus)
-		ErrOrNil := CVService.SubmitCV(cv)
+		ErrOrNil := CVService.SubmitCV("CV001")
 
 		if ErrOrNil == nil {
 			t.Errorf("Expected nil, but got %v", ErrOrNil)
+		}
+	})
+
+	t.Run("Must not submit the CV if it is already submitted.", func(t *testing.T) {
+		EventBus := event.NewEventBus()
+		
+		CVRepository := adapters.NewInmemoryCVRepository()
+		CVService := NewCVSubmissionService(CVRepository, EventBus)
+		
+		ErrOrNil := CVService.SubmitCV("CV003")
+		if ErrOrNil == nil {
+			t.Errorf("Expected error, but got %v", nil)
 		}
 	})
 

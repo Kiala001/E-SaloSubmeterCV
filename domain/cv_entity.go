@@ -13,6 +13,10 @@ type CV struct {
 }
 
 func (c *CV) Validate() error {
+	if c.Status == "Validado" {
+		return errors.New("CV already validated")
+	}
+
 	c.Status = "Validado"
 
 	c.AddEvent("CVValidado")
@@ -22,6 +26,10 @@ func (c *CV) Validate() error {
 func (c *CV) Submit() error {
 	if c.Status != "Validado" {
 		return errors.New("CV must be validated before submission")
+	}
+
+	if c.Status == "Submetido" {
+		return errors.New("CV already submitted")
 	}
 
 	c.Status = "Submetido"

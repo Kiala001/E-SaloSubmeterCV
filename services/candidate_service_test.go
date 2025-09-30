@@ -3,7 +3,6 @@ package services
 import (
 	"esalo/adapters"
 	"esalo/domain"
-	"fmt"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -45,7 +44,6 @@ func TestRegisterCandidate(t *testing.T) {
 		candidateService := NewcandidateService(candidateRepository, eventBus)
 		ErrOrNil := candidateService.RegisterCandidate(Candidate)
 
-		fmt.Println("==== ERROR: ",ErrOrNil," ====")
 		if ErrOrNil == nil {
 			t.Error("I was expecting an error, but I got nil.")
 		}
@@ -83,7 +81,6 @@ func TestRegisterCandidate(t *testing.T) {
 		eventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
-		cv := CVRepository.GetCVById("CV001")
 
 		CVService := NewCVValidationService(CVRepository, eventBus)
 
@@ -95,7 +92,7 @@ func TestRegisterCandidate(t *testing.T) {
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
-			CVId:     cv.Id,
+			CVId:     "CV001",
 		}
 
 		var eventHandlerCVSubmetido = event.HandlerFunc(func(e event.Event) {
@@ -105,7 +102,7 @@ func TestRegisterCandidate(t *testing.T) {
 		})
 		eventBus.Subscribe("CVValidado", eventHandlerCVSubmetido)
 
-		CVService.ValidateCV(cv)
+		CVService.ValidateCV("CV001")
 
 		length := candidateRepository.Length()
 		if length != 1 {
@@ -117,14 +114,13 @@ func TestRegisterCandidate(t *testing.T) {
 		eventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
-		cv := CVRepository.GetCVById("CV002")
 
 		Candidate := domain.CandidateDTO{
 			Id:       "Candidate003",
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
-			CVId:     "CV001",
+			CVId:     "CV002",
 		}
 
 		CVService := NewCVSubmissionService(CVRepository, eventBus)
@@ -139,7 +135,7 @@ func TestRegisterCandidate(t *testing.T) {
 		})
 		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
 
-		CVService.SubmitCV(cv)
+		CVService.SubmitCV("CV002")
 
 		length := candidateRepository.Length()
 		if length != 1 {
@@ -152,7 +148,6 @@ func TestRegisterCandidate(t *testing.T) {
 		eventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
-		cv := CVRepository.GetCVById("CV001")
 
 		Candidate := domain.CandidateDTO{
 			Id:       "Candidate003",
@@ -174,7 +169,7 @@ func TestRegisterCandidate(t *testing.T) {
 		})
 		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
 
-		CVService.SubmitCV(cv)
+		CVService.SubmitCV("CV001")
 
 		length := candidateRepository.Length()
 		if length != 0 {
@@ -188,7 +183,6 @@ func TestRegisterCandidate(t *testing.T) {
 
 		CVRepository := adapters.NewInmemoryCVRepository()
 
-		CV := CVRepository.GetCVById("CV002")
 		CVService := NewCVSubmissionService(CVRepository, eventBus)
 
 		Candidate := domain.CandidateDTO{
@@ -196,7 +190,7 @@ func TestRegisterCandidate(t *testing.T) {
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
-			CVId:     "CV001",
+			CVId:     "CV002",
 		}
 
 		CandidateRepository := adapters.NewInmemorycandidateRepository()
@@ -217,7 +211,7 @@ func TestRegisterCandidate(t *testing.T) {
 		eventBus.Subscribe("CVSubmetido", eventHandlerCVSubmetido)
 		eventBus.Subscribe("CandidatoRegistadoCadastrado", eventHandlerCandidateRegistadoCadastrado)
 
-		CVService.SubmitCV(CV)
+		CVService.SubmitCV("CV002")
 
 		if !isPublished {
 			t.Errorf("I was hoping that the CandidatoRegistadoCadastrado event would be published.")

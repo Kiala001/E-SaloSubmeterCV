@@ -1,7 +1,7 @@
 package services
 
 import (
-	"esalo/domain"
+	"errors"
 	"esalo/ports"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -16,12 +16,16 @@ func NewCVValidationService(repo ports.CVRepository, bus event.Bus) *CVValidatio
 	return &CVValidationService{Repository: repo, Bus: bus}
 }
 
-func (s *CVValidationService) ValidateCV(cv domain.CV) error {
-	cv.Validate()
+func (s *CVValidationService) ValidateCV(CvId string) error {
+	CV, exists := s.Repository.GetById(CvId)
+	if !exists { return errors.New("CV not found") }
 
-	s.Repository.Update(cv)
+	errOrNil := CV.Validate()
+	if errOrNil != nil { return errOrNil }
 
-	events := cv.PullEvents()
-	cv.PublishEvent(s.Bus, events[0])
+	s.Repository.Save(CV)
+
+	events := CV.PullEvents()
+	CV.PublishEvent(s.Bus, events[0])
 	return nil
 }

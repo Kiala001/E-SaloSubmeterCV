@@ -10,14 +10,16 @@ func NewInmemoryCVRepository() *InmemoryCVRepository {
 	return &InmemoryCVRepository{CVs: map[string]domain.CV{
 		"CV001": {Id: "CV001", Status: ""},
 		"CV002": {Id: "CV002", Status: "Validado"},
+		"CV003": {Id: "CV003", Status: "Submetido"},
 	}}
 }
 
-func (r *InmemoryCVRepository) GetCVById(id string) domain.CV {
-	return r.CVs[id]
+func (r *InmemoryCVRepository) GetById(id string) (domain.CV, bool) {
+	cv, ok := r.CVs[id]
+	return cv, ok
 }
 
-func (r *InmemoryCVRepository) Update(cv domain.CV) error {
+func (r *InmemoryCVRepository) Save(cv domain.CV) error {
 	r.CVs[cv.Id] = cv
 	return nil
 }
