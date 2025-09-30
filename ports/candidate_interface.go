@@ -2,8 +2,7 @@ package ports
 
 import "esalo/domain"
 
-
-type ICandidatoRepository interface {
+type CandidateRepository interface {
 	Length() int
-	Save(candidato *domain.Candidato) error
+	Save(Candidate domain.Candidate) error
 }

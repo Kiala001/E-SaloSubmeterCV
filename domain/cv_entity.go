@@ -8,30 +8,34 @@ import (
 
 type CV struct {
 	Id     string
-	Estado string
+	Status string
 	events []event.Event
 }
 
-func (c *CV) Validar() error {
-	c.Estado = "Validado"
+func (c *CV) Validate() error {
+	c.Status = "Validado"
 
-	c.events = append(c.events, event.New("CVValidado", event.WithPayload(c)))
+	c.AddEvent("CVValidado")
 	return nil
 }
 
-func (c *CV) Submeter() error {
-	if c.Estado != "Validado" {
+func (c *CV) Submit() error {
+	if c.Status != "Validado" {
 		return errors.New("CV must be validated before submission")
 	}
 
-	c.Estado = "Submetido"
+	c.Status = "Submetido"
 
-	c.events = append(c.events, event.New("CVSubmetido", event.WithPayload(c)))
+	c.AddEvent("CVSubmetido")
 	return nil
 }
 
 func (c *CV) PublishEvent(bus event.Bus, e event.Event) {
 	bus.Publish(e)
+}
+
+func (c *CV) AddEvent(eventName string) {
+	c.events = append(c.events, event.New(eventName, event.WithPayload(c)))
 }
 
 func (c *CV) PullEvents() []event.Event {

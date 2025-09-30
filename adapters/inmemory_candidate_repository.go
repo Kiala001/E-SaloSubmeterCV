@@ -2,22 +2,21 @@ package adapters
 
 import "esalo/domain"
 
-
-type InmemoryCandidatoRepository struct {
-	Candidatos map[string]*domain.Candidato
+type InmemorycandidateRepository struct {
+	Candidates map[string]domain.Candidate
 }
 
-func NewInmemoryCandidatoRepository() *InmemoryCandidatoRepository {
-	return &InmemoryCandidatoRepository{
-		Candidatos: make(map[string]*domain.Candidato),
+func NewInmemorycandidateRepository() *InmemorycandidateRepository {
+	return &InmemorycandidateRepository{
+		Candidates: make(map[string]domain.Candidate),
 	}
 }
 
-func (r *InmemoryCandidatoRepository) Length() int {
-	return len(r.Candidatos)
+func (r *InmemorycandidateRepository) Length() int {
+	return len(r.Candidates)
 }
 
-func (r *InmemoryCandidatoRepository) Save(candidato *domain.Candidato) error {
-	r.Candidatos[candidato.Id] = candidato
+func (r *InmemorycandidateRepository) Save(Candidate domain.Candidate) error {
+	r.Candidates[Candidate.Id] = Candidate
 	return nil
 }
