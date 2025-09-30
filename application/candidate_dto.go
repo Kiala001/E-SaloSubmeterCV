@@ -1,7 +1,6 @@
-package domain
+package application
 
 type CandidateDTO struct {
-	Id       string
 	Name     string
 	Email	 string
 	Password string

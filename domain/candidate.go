@@ -7,19 +7,22 @@ import (
 )
 
 type Candidate struct {
-	Id       string
-	Name     string
+	Id       ID
+	Name     Name
 	Email    Email
 	Password Password
 	CVId     string
 	events   []event.Event
 }
 
-func NewCandidate(id string, name string, email Email, password Password, cv_id string) (Candidate, error) {
+func NewCandidate(name Name, email Email, password Password, cv_id string) (Candidate, error) {
 	
-	if name == "" {	return Candidate{}, errors.New("Name cannot be empty") }
-
 	if cv_id == "" { return Candidate{}, errors.New("CVId cannot be empty") }
+
+	id, err := ID{}.GenerateNew()
+	if err != nil {
+		return Candidate{}, err
+	}
 
 	Candidate := Candidate{
 		Id:       id,

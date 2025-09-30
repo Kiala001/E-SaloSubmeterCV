@@ -1,6 +1,7 @@
 package services
 
 import (
+	"esalo/application"
 	"esalo/domain"
 	"esalo/ports"
 
@@ -16,14 +17,20 @@ func NewcandidateService(repo ports.CandidateRepository, eventBus event.Bus) *ca
 	return &candidateService{repository: repo, eventBus: eventBus}
 }
 
-func (s *candidateService) RegisterCandidate(CandidateDTO domain.CandidateDTO) error {
+func (s *candidateService) RegisterCandidate(CandidateDTO application.CandidateDTO) error {
+	name, err := domain.NewName(CandidateDTO.Name)
+	if err != nil {	return err }
+
 	email, err := domain.NewEmail(CandidateDTO.Email)
 	if err != nil {	return err }
 
 	password, err := domain.NewPassword(CandidateDTO.Password)
 	if err != nil {	return err }
 
-	Candidate, err := domain.NewCandidate(CandidateDTO.Id, CandidateDTO.Name, email, password, CandidateDTO.CVId)
+	_, exists := s.repository.FindByEmail(email)
+	if exists { return err }
+
+	Candidate, err := domain.NewCandidate(name, email, password, CandidateDTO.CVId)
 	if err != nil {	return err	}
 
 	s.repository.Save(Candidate)

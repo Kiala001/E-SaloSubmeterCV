@@ -2,18 +2,17 @@ package services
 
 import (
 	"esalo/adapters"
-	"esalo/domain"
+	"esalo/application"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
 )
 
 func TestRegisterCandidate(t *testing.T) {
-	t.Run("You must register a candidate successfully.", func(t *testing.T) {
+	t.Run("Must register a candidate successfully.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
@@ -30,10 +29,9 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("You must not register a candidate with an empty cvid.", func(t *testing.T) {
+	t.Run("Must not register a candidate with an empty cvid.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
@@ -49,7 +47,7 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("You must publish the CandidateRegistadoCadastrado event", func(t *testing.T) {
+	t.Run("Must publish the CandidateRegistadoCadastrado event", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 		isPublished := false
 
@@ -60,8 +58,7 @@ func TestRegisterCandidate(t *testing.T) {
 		})
 		eventBus.Subscribe("CandidatoRegistadoCadastrado", eventHandler)
 
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
@@ -77,7 +74,7 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("You must register a candidate after validating the CV.", func(t *testing.T) {
+	t.Run("Must register a candidate after validating the CV.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
@@ -87,8 +84,7 @@ func TestRegisterCandidate(t *testing.T) {
 		candidateRepository := adapters.NewInmemorycandidateRepository()
 		candidateService := NewcandidateService(candidateRepository, eventBus)
 
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
@@ -110,13 +106,12 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("You must register candidate after submitting the CV.", func(t *testing.T) {
+	t.Run("Must register candidate after submitting the CV.", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
 
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
@@ -143,14 +138,13 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("You must not register candidate if the CV is not submitted.", func(t *testing.T) {
+	t.Run("Must not register candidate if the CV is not submitted.", func(t *testing.T) {
 
 		eventBus := event.NewEventBus()
 
 		CVRepository := adapters.NewInmemoryCVRepository()
 
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
@@ -177,7 +171,7 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("You must register as a candidate after submitting your CV", func(t *testing.T) {
+	t.Run("Must register as a candidate after submitting your CV", func(t *testing.T) {
 		eventBus := event.NewEventBus()
 		isPublished := false
 
@@ -185,8 +179,7 @@ func TestRegisterCandidate(t *testing.T) {
 
 		CVService := NewCVSubmissionService(CVRepository, eventBus)
 
-		Candidate := domain.CandidateDTO{
-			Id:       "Candidate003",
+		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",

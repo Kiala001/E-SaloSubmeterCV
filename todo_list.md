@@ -4,7 +4,7 @@
 
 - Geral:
   - Verificação da existênca do CV (x)
-  - Melhorar as descrições dos testes ()
+  - Melhorar as descrições dos testes (x)
   - Não passar o CV no serviço mas sim o ID (x)
   - Alterar o método Update para Save (x)
   - Alterar o método GetById para GetByID (x)
