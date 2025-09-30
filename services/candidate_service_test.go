@@ -3,6 +3,7 @@ package services
 import (
 	"esalo/adapters"
 	"esalo/domain"
+	"fmt"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -27,6 +28,26 @@ func TestRegisterCandidate(t *testing.T) {
 		length := candidateRepository.Length()
 		if length != 1 {
 			t.Errorf("Expected %d, but got %d", 1, length)
+		}
+	})
+
+	t.Run("You must not register a candidate with an empty cvid.", func(t *testing.T) {
+		eventBus := event.NewEventBus()
+		Candidate := domain.CandidateDTO{
+			Id:       "Candidate003",
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "",
+		}
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+		ErrOrNil := candidateService.RegisterCandidate(Candidate)
+
+		fmt.Println("==== ERROR: ",ErrOrNil," ====")
+		if ErrOrNil == nil {
+			t.Error("I was expecting an error, but I got nil.")
 		}
 	})
 
