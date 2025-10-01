@@ -3,11 +3,11 @@ package adapters
 import "esalo/domain"
 
 type InmemoryCVRepository struct {
-	CVs map[string]domain.CV
+	cvs map[string]domain.CV
 }
 
 func NewInmemoryCVRepository() *InmemoryCVRepository {
-	return &InmemoryCVRepository{CVs: map[string]domain.CV{
+	return &InmemoryCVRepository{cvs: map[string]domain.CV{
 		"CV001": domain.NewCV("CV001", domain.Criado),
 		"CV002": domain.NewCV("CV002", domain.Validado),
 		"CV003": domain.NewCV("CV003", domain.Submetido),
@@ -15,11 +15,11 @@ func NewInmemoryCVRepository() *InmemoryCVRepository {
 }
 
 func (r *InmemoryCVRepository) GetById(id string) (domain.CV, bool) {
-	cv, ok := r.CVs[id]
+	cv, ok := r.cvs[id]
 	return cv, ok
 }
 
 func (r *InmemoryCVRepository) Save(cv domain.CV) error {
-	r.CVs[cv.Id()] = cv
+	r.cvs[cv.Id()] = cv
 	return nil
 }

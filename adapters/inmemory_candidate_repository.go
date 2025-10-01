@@ -2,27 +2,27 @@ package adapters
 
 import "esalo/domain"
 
-type InmemorycandidateRepository struct {
-	Candidates map[string]domain.Candidate
+type InmemoryCandidateRepository struct {
+	candidates map[string]domain.Candidate
 }
 
-func NewInmemorycandidateRepository() *InmemorycandidateRepository {
-	return &InmemorycandidateRepository{
-		Candidates: make(map[string]domain.Candidate),
+func NewInmemoryCandidateRepository() *InmemoryCandidateRepository {
+	return &InmemoryCandidateRepository{
+		candidates: make(map[string]domain.Candidate),
 	}
 }
 
-func (r *InmemorycandidateRepository) Length() int {
-	return len(r.Candidates)
+func (r *InmemoryCandidateRepository) Length() int {
+	return len(r.candidates)
 }
 
-func (r *InmemorycandidateRepository) Save(Candidate domain.Candidate) error {
-	r.Candidates[Candidate.ID().Value()] = Candidate
+func (r *InmemoryCandidateRepository) Save(Candidate domain.Candidate) error {
+	r.candidates[Candidate.ID().Value()] = Candidate
 	return nil
 }
 
-func (r *InmemorycandidateRepository) FindByEmail(email domain.Email) (domain.Candidate, bool) {
-	for _, candidate := range r.Candidates {
+func (r *InmemoryCandidateRepository) FindByEmail(email domain.Email) (domain.Candidate, bool) {
+	for _, candidate := range r.candidates {
 		if candidate.Email() == email {
 			return candidate, true
 		}

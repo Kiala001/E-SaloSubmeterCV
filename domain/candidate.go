@@ -15,21 +15,19 @@ type Candidate struct {
 	events   []event.Event
 }
 
-func NewCandidate(name Name, email Email, password Password, cv_id string) (Candidate, error) {
-	
-	if cv_id == "" { return Candidate{}, errors.New("CVId cannot be empty") }
+func NewCandidate(name Name, email Email, password Password, cvId string) (Candidate, error) {
 
-	id, err := ID{}.GenerateNew()
-	if err != nil {
-		return Candidate{}, err
-	}
+	if cvId == "" {	return Candidate{}, errors.New("CVId cannot be empty") }
+
+	id, err := NewID()
+	if err != nil {	return Candidate{}, err }
 
 	Candidate := Candidate{
 		id:       id,
 		name:     name,
 		email:    email,
 		password: password,
-		cvId:     cv_id,
+		cvId:     cvId,
 	}
 
 	Candidate.AddEvent("CandidatoRegistadoCadastrado")

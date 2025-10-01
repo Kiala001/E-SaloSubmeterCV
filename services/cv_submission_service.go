@@ -8,25 +8,28 @@ import (
 )
 
 type CVSubmissionService struct {
-	Bus        event.Bus
-	Repository ports.CVRepository
+	bus        event.Bus
+	repository ports.CVRepository
 }
 
 func NewCVSubmissionService(repo ports.CVRepository, bus event.Bus) *CVSubmissionService {
-	return &CVSubmissionService{Repository: repo, Bus: bus}
+	return &CVSubmissionService{repository: repo, bus: bus}
 }
 
 func (s *CVSubmissionService) SubmitCV(CvId string) error {
-	CV, exists := s.Repository.GetById(CvId)
-	if !exists { return errors.New("CV not found") }
+	CV, exists := s.repository.GetById(CvId)
+	if !exists { 
+		return errors.New("CV not found") 
+	}
 
-	errOrNil := CV.Submit()
-	if errOrNil != nil {return errOrNil	}
+	if errOrNil := CV.Submit(); errOrNil != nil { 
+		return errOrNil 
+	}
 
-	s.Repository.Save(CV)
+	s.repository.Save(CV)
 
 	events := CV.PullEvents()
-	CV.PublishEvent(s.Bus, events[0])
+	CV.PublishEvent(s.bus, events[0])
 
 	return nil
 }

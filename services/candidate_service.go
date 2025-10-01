@@ -34,7 +34,7 @@ func (s *candidateService) RegisterCandidate(CandidateDTO application.CandidateD
 	if err != nil {	return err	}
 
 	s.repository.Save(Candidate)
-
+	
 	event := Candidate.PullEvents()
 
 	Candidate.PublishEvents(s.eventBus, event[0])
