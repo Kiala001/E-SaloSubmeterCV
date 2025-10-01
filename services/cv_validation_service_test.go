@@ -2,6 +2,7 @@ package services
 
 import (
 	"esalo/adapters"
+	"esalo/domain"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -40,8 +41,8 @@ func TestValidatedCV(t *testing.T) {
 
 		updatedCV, _ := CVRepository.GetById("CV001")
 
-		if updatedCV.Status != "Validado" {
-			t.Errorf("Expected %s, but got %s", "Validado", updatedCV.Status)
+		if updatedCV.Status() != domain.Validado {
+			t.Errorf("Expected %s, but got %s", domain.Validado, updatedCV.Status())
 		}
 	})
 
@@ -54,8 +55,8 @@ func TestValidatedCV(t *testing.T) {
 		CVService.ValidateCV("CV002")
 
 		updatedCV, _ := CVRepository.GetById("CV002")
-		if updatedCV.Status != "Validado" {
-			t.Errorf("Expected %s, but got %s", "Validado", updatedCV.Status)
+		if updatedCV.Status() != domain.Validado {
+			t.Errorf("Expected %s, but got %s", domain.Validado, updatedCV.Status())
 		}
 	})
 

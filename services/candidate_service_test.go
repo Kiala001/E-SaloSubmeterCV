@@ -3,6 +3,8 @@ package services
 import (
 	"esalo/adapters"
 	"esalo/application"
+	"esalo/domain"
+	"fmt"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -29,23 +31,6 @@ func TestRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("Must not register a candidate with an empty cvid.", func(t *testing.T) {
-		eventBus := event.NewEventBus()
-		Candidate := application.CandidateDTO{
-			Name:     "Kiala Emanuel",
-			Email:    "kiala@gmail.com",
-			Password: "Kiala001",
-			CVId:     "",
-		}
-
-		candidateRepository := adapters.NewInmemorycandidateRepository()
-		candidateService := NewcandidateService(candidateRepository, eventBus)
-		ErrOrNil := candidateService.RegisterCandidate(Candidate)
-
-		if ErrOrNil == nil {
-			t.Error("I was expecting an error, but I got nil.")
-		}
-	})
 
 	t.Run("Must publish the CandidateRegistadoCadastrado event", func(t *testing.T) {
 		eventBus := event.NewEventBus()
@@ -71,6 +56,53 @@ func TestRegisterCandidate(t *testing.T) {
 
 		if !isPublished {
 			t.Error("I was hoping that the CandidateRegistadoCadastrado event would be published.")
+		}
+	})
+
+	t.Run("Should not register the second candidate with the same email address as the first candidate.", func(t *testing.T) {
+		eventBus := event.NewEventBus()
+
+		firstCandidate := application.CandidateDTO{
+			Name:     "Mário Varela",
+			Email:    "esalo@gmail.com",
+			Password: "Varela001",
+			CVId:     "CV001",
+		}
+
+		secondCandidate := application.CandidateDTO{
+			Name:     "Silvano Paulino",
+			Email:    "esalo@gmail.com",
+			Password: "Silvano001",
+			CVId:     "CV002",
+		}
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+		candidateService.RegisterCandidate(firstCandidate)
+		candidateService.RegisterCandidate(secondCandidate)
+
+		length := candidateRepository.Length()
+		if length != 1 {
+			t.Errorf("Expected %d, but got %d", 1, length)
+		}		
+		
+	})
+
+	t.Run("Must not register a candidate with an empty cvid.", func(t *testing.T) {
+		eventBus := event.NewEventBus()
+		Candidate := application.CandidateDTO{
+			Name:     "Kiala Emanuel",
+			Email:    "kiala@gmail.com",
+			Password: "Kiala001",
+			CVId:     "",
+		}
+
+		candidateRepository := adapters.NewInmemorycandidateRepository()
+		candidateService := NewcandidateService(candidateRepository, eventBus)
+		ErrOrNil := candidateService.RegisterCandidate(Candidate)
+
+		if ErrOrNil == nil {
+			t.Error("I was expecting an error, but I got nil.")
 		}
 	})
 
@@ -208,6 +240,77 @@ func TestRegisterCandidate(t *testing.T) {
 
 		if !isPublished {
 			t.Errorf("I was hoping that the CandidatoRegistadoCadastrado event would be published.")
+		}
+	})
+}
+
+
+func TestValueObjectOfCandidate(t *testing.T) {
+
+	t.Run("Must create a valid ID.", func(t *testing.T) {
+		id, err := domain.ID{}.GenerateNew()
+		fmt.Println("ID:",id.Value())
+		if err != nil {
+			t.Errorf("I was expecting nil, but I got %s", err.Error())
+		}
+	})
+	t.Run("Must not create an empty ID.", func(t *testing.T) {
+		_, err := domain.ID{}.GenerateNew()
+		if err != nil {
+			t.Errorf("I was expecting nil, but I got %s", err.Error())
+		}
+	})
+
+	t.Run("Must create a valid name.", func(t *testing.T) {
+		_, err := domain.NewName("Kiala Emanuel")
+		
+		if err != nil {
+			t.Errorf("I was expecting nil, but I got %s", err.Error())
+		}
+	})
+
+	t.Run("Must not create an invalid name.", func(t *testing.T) {
+		_, err := domain.NewName("Ki")
+		
+		if err == nil {
+			t.Error("I was expecting an error, but I got nil.")
+		}
+	})
+
+	t.Run("Must create a valid email.", func(t *testing.T) {
+		email, err := domain.NewEmail("kiala@gmail.com")
+		fmt.Println("Email:",email.String())
+		if err != nil {
+			t.Errorf("I was expecting nil, but I got %s", err.Error())
+		}
+	})
+
+	t.Run("Must not create an invalid email.", func(t *testing.T) {
+		_, err := domain.NewEmail("kialagmail.com")
+		fmt.Printf("Error: %s\n", err.Error())
+		if err == nil {
+			t.Error("I was expecting an error, but I got nil.")
+		}
+	})
+
+	t.Run("Must create a valid password.", func(t *testing.T) {
+		_, err := domain.NewPassword("Kiala001")
+		if err != nil {
+			t.Errorf("I was expecting nil, but I got %s", err.Error())
+		}
+	})
+
+	t.Run("Must not create an invalid password.", func(t *testing.T) {
+		_, err := domain.NewPassword("Kia")
+		if err == nil {
+			t.Error("I was expecting an error, but I got nil.")
+		}
+	})
+
+	t.Run("Must not create an empty password.", func(t *testing.T) {
+		_, err := domain.NewPassword("")
+		if err == nil {
+			t.Error("I was expecting an error, but I got nil.")
 		}
 	})
 }

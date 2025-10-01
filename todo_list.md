@@ -1,5 +1,22 @@
 # Tarefas
 
+### 01 Outubro 2025
+
+#### Novas
+- Implementação de testes dos objectos de valor antes da implementação dos mesmos (x)
+- Reavaliação do código ()
+- Refatoração do código ()
+- Revisão da nomeclatura ()
+
+
+#### Do dia anterior (Não concluidas)
+
+- Registo do Candidato:
+  - Adicionar o nome como objecto de valor (x)
+  - Adicionar o id como objecto de valor (x)
+  - Gerar Id de forma aautomâtica ()
+  - Não permitir o registo de candidatos com o mesmo email ()
+
 ### 30 Setembro 2025
 
 - Geral:

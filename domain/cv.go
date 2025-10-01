@@ -7,35 +7,54 @@ import (
 )
 
 type CV struct {
-	Id     string
-	Status string
+	id     string
+	status CVStatus
 	events []event.Event
 }
 
+func NewCV(id string, status CVStatus) CV {
+	return CV{
+		id:     id,
+		status: status,
+	}
+}
+
 func (c *CV) Validate() error {
-	if c.Status == "Validado" {
+	if c.status == Validado {
 		return errors.New("CV already validated")
 	}
 
-	c.Status = "Validado"
+	if c.status == Submetido {
+		return errors.New("CV already submitted and cannot be validated")		
+	}
+
+	c.status = Validado
 
 	c.AddEvent("CVValidado")
 	return nil
 }
 
 func (c *CV) Submit() error {
-	if c.Status != "Validado" {
+	if c.status != Validado {
 		return errors.New("CV must be validated before submission")
 	}
 
-	if c.Status == "Submetido" {
+	if c.status == Submetido {
 		return errors.New("CV already submitted")
 	}
 
-	c.Status = "Submetido"
+	c.status = Submetido
 
 	c.AddEvent("CVSubmetido")
 	return nil
+}
+
+func (c CV) Status() CVStatus {
+	return c.status
+}
+
+func (c CV) Id() string {
+	return c.id
 }
 
 func (c *CV) PublishEvent(bus event.Bus, e event.Event) {

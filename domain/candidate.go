@@ -7,11 +7,11 @@ import (
 )
 
 type Candidate struct {
-	Id       ID
-	Name     Name
-	Email    Email
-	Password Password
-	CVId     string
+	id       ID
+	name     Name
+	email    Email
+	password Password
+	cvId     string
 	events   []event.Event
 }
 
@@ -25,15 +25,23 @@ func NewCandidate(name Name, email Email, password Password, cv_id string) (Cand
 	}
 
 	Candidate := Candidate{
-		Id:       id,
-		Name:     name,
-		Email:    email,
-		Password: password,
-		CVId:     cv_id,
+		id:       id,
+		name:     name,
+		email:    email,
+		password: password,
+		cvId:     cv_id,
 	}
 
 	Candidate.AddEvent("CandidatoRegistadoCadastrado")
 	return Candidate, nil
+}
+
+func (c Candidate) ID() ID {
+	return c.id
+}
+
+func (c Candidate) Email() Email {
+	return c.email
 }
 
 func (c *Candidate) PullEvents() []event.Event {

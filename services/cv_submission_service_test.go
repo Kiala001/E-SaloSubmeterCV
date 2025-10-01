@@ -2,6 +2,7 @@ package services
 
 import (
 	"esalo/adapters"
+	"esalo/domain"
 	"testing"
 
 	"github.com/kindalus/godx/pkg/event"
@@ -39,8 +40,8 @@ func TestSubmissionCV(t *testing.T) {
 
 		updatedCV, _ := CVRepository.GetById("CV002")
 
-		if updatedCV.Status != "Submetido" {
-			t.Errorf("Expected %s, but got %s", "Disponível", updatedCV.Status)
+		if updatedCV.Status() != domain.Submetido {
+			t.Errorf("Expected %s, but got %s", domain.Submetido, updatedCV.Status())
 		}
 	})
 
