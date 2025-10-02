@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"esalo/application"
 	"esalo/domain"
 	"esalo/ports"
@@ -18,25 +19,37 @@ func NewcandidateService(repo ports.CandidateRepository, eventBus event.Bus) *ca
 }
 
 func (s *candidateService) RegisterCandidate(CandidateDTO application.CandidateDTO) error {
-	name, err := domain.NewName(CandidateDTO.Name)
-	if err != nil {	return err }
 
-	email, err := domain.NewEmail(CandidateDTO.Email)
-	if err != nil {	return err }
+	name, errOrNil := domain.NewName(CandidateDTO.Name)
+	if errOrNil != nil { 
+		return errOrNil 
+	}
 
-	password, err := domain.NewPassword(CandidateDTO.Password)
-	if err != nil {	return err }
+	email, errOrNil := domain.NewEmail(CandidateDTO.Email)
+	if errOrNil != nil {	
+		return errOrNil 
+	}
 
-	_, exists := s.repository.FindByEmail(email)
-	if exists { return err }
+	password, errOrNil := domain.NewPassword(CandidateDTO.Password)
+	if errOrNil != nil {	
+		return errOrNil 
+	}
 
-	Candidate, err := domain.NewCandidate(name, email, password, CandidateDTO.CVId)
-	if err != nil {	return err	}
+	if _, exists := s.repository.FindByEmail(email); exists { 
+		return errors.New("candidate with this email already exists") 
+	}
 
-	s.repository.Save(Candidate)
+	candidate, errOrNil := domain.NewCandidate(name, email, password, CandidateDTO.CVId)
+	if errOrNil != nil {	
+		return errOrNil	
+	}
+
+	s.repository.Save(candidate)
 	
-	event := Candidate.PullEvents()
+	events := candidate.PullEvents()
+	for _, event := range events {
+		s.eventBus.Publish(event)	
+	}
 
-	Candidate.PublishEvents(s.eventBus, event[0])
 	return nil
 }

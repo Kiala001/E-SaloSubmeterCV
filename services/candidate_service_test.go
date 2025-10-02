@@ -9,7 +9,7 @@ import (
 )
 
 func TestFeatureRegisterCandidate(t *testing.T) {
-	t.Run("Must register a candidate successfully.", func(t *testing.T) {
+	t.Run("Should register a candidate successfully.", func(t *testing.T) {
 		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
@@ -29,8 +29,7 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		}
 	})
 
-
-	t.Run("Must publish the CandidateRegistadoCadastrado event", func(t *testing.T) {
+	t.Run("Should publish the CandidateRegistadoCadastrado event", func(t *testing.T) {
 		Candidate := application.CandidateDTO{
 			Name:     "Rui Manuel",
 			Email:    "rui@gmail.com",
@@ -52,7 +51,7 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		candidateService.RegisterCandidate(Candidate)
 
 		if !isPublished {
-			t.Error("I was hoping that the CandidateRegistadoCadastrado event would be published.")
+			t.Error("Expected CandidateRegistadoCadastrado event to be published.")
 		}
 	})
 
@@ -81,11 +80,12 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		length := candidateRepository.Length()
 		if length != 1 {
 			t.Errorf("Expected %d, but got %d", 1, length)
-		}		
-		
+		}
+
 	})
 
-	t.Run("Must not register a candidate with an empty cvid.", func(t *testing.T) {
+	t.Run("Should not register a candidate with an empty cvid.", func(t *testing.T) {
+
 		eventBus := event.NewEventBus()
 		Candidate := application.CandidateDTO{
 			Name:     "Osvaldo de Sousa",
@@ -99,11 +99,12 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		ErrOrNil := candidateService.RegisterCandidate(Candidate)
 
 		if ErrOrNil == nil {
-			t.Error("I was expecting an error, but I got nil.")
+			t.Error("Expecting an error, but I got nil.")
 		}
 	})
 
-	t.Run("Must register a candidate after validating the CV.", func(t *testing.T) {
+	t.Run("Should register a candidate after validating the CV.", func(t *testing.T) {
+
 		eventBus := event.NewEventBus()
 		CVRepository := adapters.NewInmemoryCVRepository()
 		CVService := NewCVValidationService(CVRepository, eventBus)
@@ -131,7 +132,8 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("Must register candidate after submitting the CV.", func(t *testing.T) {
+	t.Run("Should register candidate after submitting the CV.", func(t *testing.T) {
+
 		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
@@ -160,9 +162,10 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("Must not register candidate if the CV is not submitted.", func(t *testing.T) {
+	t.Run("Should not register candidate if the CV is not submitted.", func(t *testing.T) {
+
 		Candidate := application.CandidateDTO{
-		Name:     "Kiala Emanuel",
+			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
 			Password: "Kiala001",
 			CVId:     "CV001",
@@ -173,7 +176,7 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		CVService := NewCVSubmissionService(CVRepository, eventBus)
 		candidateRepository := adapters.NewInmemoryCandidateRepository()
 		candidateService := NewcandidateService(candidateRepository, eventBus)
-		
+
 		var eventHandlerCVSubmetido = event.HandlerFunc(func(e event.Event) {
 			if e.Name() == "CVSubmetido" {
 				candidateService.RegisterCandidate(Candidate)
@@ -189,7 +192,8 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		}
 	})
 
-	t.Run("Must register as a candidate after submitting your CV", func(t *testing.T) {
+	t.Run("Should register as a candidate after submitting your CV", func(t *testing.T) {
+
 		Candidate := application.CandidateDTO{
 			Name:     "Kiala Emanuel",
 			Email:    "kiala@gmail.com",
@@ -201,7 +205,7 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		isPublished := false
 		CVRepository := adapters.NewInmemoryCVRepository()
 		CVService := NewCVSubmissionService(CVRepository, eventBus)
-		
+
 		CandidateRepository := adapters.NewInmemoryCandidateRepository()
 		CandidateService := NewcandidateService(CandidateRepository, eventBus)
 
@@ -222,9 +226,8 @@ func TestFeatureRegisterCandidate(t *testing.T) {
 		CVService.SubmitCV("CV002")
 
 		if !isPublished {
-			t.Errorf("I was hoping that the CandidatoRegistadoCadastrado event would be published.")
+			t.Errorf("Expected CandidatoRegistadoCadastrado event to be published.")
 		}
 	})
 
 }
-

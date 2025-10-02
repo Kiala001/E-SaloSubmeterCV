@@ -23,7 +23,7 @@ func NewName(value string) (Name, error) {
 
 	parts := strings.Fields(value)
 	if len(parts) < 2 {
-		return Name{}, errors.New("name must contain at least first name and last name")
+		return Name{}, errors.New("name Should contain at least first name and last name")
 	}
 
 	return Name{value: value}, nil

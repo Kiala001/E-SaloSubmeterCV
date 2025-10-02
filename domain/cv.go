@@ -25,26 +25,24 @@ func (c *CV) Validate() error {
 	}
 
 	if c.status == Submetido {
-		return errors.New("CV already submitted and cannot be validated")		
+		return errors.New("Cannot validate a CV that is already submitted")
 	}
 
 	c.status = Validado
-
 	c.AddEvent("CVValidado")
 	return nil
 }
 
 func (c *CV) Submit() error {
-	if c.status != Validado {
-		return errors.New("CV must be validated before submission")
-	}
-
 	if c.status == Submetido {
 		return errors.New("CV already submitted")
 	}
 
-	c.status = Submetido
+	if c.status != Validado {
+		return errors.New("CV must be  validated  before submission")
+	}
 
+	c.status = Submetido
 	c.AddEvent("CVSubmetido")
 	return nil
 }
@@ -55,10 +53,6 @@ func (c CV) Status() CVStatus {
 
 func (c CV) Id() string {
 	return c.id
-}
-
-func (c *CV) PublishEvent(bus event.Bus, e event.Event) {
-	bus.Publish(e)
 }
 
 func (c *CV) AddEvent(eventName string) {

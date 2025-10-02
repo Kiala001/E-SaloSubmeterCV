@@ -17,19 +17,22 @@ func NewCVValidationService(repo ports.CVRepository, bus event.Bus) *CVValidatio
 }
 
 func (s *CVValidationService) ValidateCV(CvId string) error {
-	CV, exists := s.repository.GetById(CvId)
+	cv, exists := s.repository.GetById(CvId)
 	if !exists { 
 		return errors.New("CV not found") 
 	}
 
-	if errOrNil := CV.Validate(); errOrNil != nil { 
+	if errOrNil := cv.Validate(); errOrNil != nil { 
 		return errOrNil 
 	}
 
-	s.repository.Save(CV)
+	s.repository.Save(cv)
 
-	events := CV.PullEvents()
-	CV.PublishEvent(s.bus, events[0])
+	events := cv.PullEvents()
+
+	for _, event := range events {
+		s.bus.Publish(event)
+	}
 
 	return nil
 }

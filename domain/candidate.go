@@ -15,6 +15,14 @@ type Candidate struct {
 	events   []event.Event
 }
 
+type CandidatePayload struct {
+	id       ID
+	name     Name
+	email    Email
+	cvId     string
+}
+
+
 func NewCandidate(name Name, email Email, password Password, cvId string) (Candidate, error) {
 
 	if cvId == "" {	return Candidate{}, errors.New("CVId cannot be empty") }
@@ -22,7 +30,7 @@ func NewCandidate(name Name, email Email, password Password, cvId string) (Candi
 	id, err := NewID()
 	if err != nil {	return Candidate{}, err }
 
-	Candidate := Candidate{
+	candidate := Candidate{
 		id:       id,
 		name:     name,
 		email:    email,
@@ -30,8 +38,16 @@ func NewCandidate(name Name, email Email, password Password, cvId string) (Candi
 		cvId:     cvId,
 	}
 
-	Candidate.AddEvent("CandidatoRegistadoCadastrado")
-	return Candidate, nil
+	payload := CandidatePayload{
+		id:    candidate.id,
+		name:  candidate.name,
+		email: candidate.email,
+		cvId:  candidate.cvId,
+	}
+
+	candidate.AddEvent("CandidatoRegistadoCadastrado", payload)
+
+	return candidate, nil
 }
 
 func (c Candidate) ID() ID {
@@ -48,10 +64,6 @@ func (c *Candidate) PullEvents() []event.Event {
 	return events
 }
 
-func (c *Candidate) AddEvent(eventName string) {
-	c.events = append(c.events, event.New(eventName, event.WithPayload(c)))
-}
-
-func (c *Candidate) PublishEvents(bus event.Bus, e event.Event) {
-	bus.Publish(e)
+func (c *Candidate) AddEvent(eventName string, payload interface{}) {
+	c.events = append(c.events, event.New(eventName, event.WithPayload(payload)))
 }

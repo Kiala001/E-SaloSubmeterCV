@@ -29,7 +29,10 @@ func (s *CVSubmissionService) SubmitCV(CvId string) error {
 	s.repository.Save(CV)
 
 	events := CV.PullEvents()
-	CV.PublishEvent(s.bus, events[0])
+
+	for _, event := range events {
+		s.bus.Publish(event)
+	}
 
 	return nil
 }

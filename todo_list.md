@@ -1,5 +1,16 @@
 # Tarefas
 
+### 02 Outubro 2025
+
+#### Novas
+
+- Implementação de novos testes ()
+ 
+
+#### Do dia anterior (Não concluídas)
+
+- Refatoração do código ()
+
 ### 01 Outubro 2025
 
 #### Novas
