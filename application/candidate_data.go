@@ -1,8 +1,8 @@
 package application
 
-type CandidateDTO struct {
+type CandidateData struct {
 	Name     string
-	Email	 string
+	Email    string
 	Password string
 	CVId     string
 }

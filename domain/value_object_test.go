@@ -32,8 +32,8 @@ func TestName(t *testing.T) {
 
 		_, err := NewName(name)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrNameCannotBeEmpty {
+			t.Errorf("Expected error %s, but got %s", ErrNameCannotBeEmpty, err)
 		}
 	})
 
@@ -42,8 +42,8 @@ func TestName(t *testing.T) {
 
 		_, err := NewName(name)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrNameShouldContainAtLeastFirstAndLast {
+			t.Errorf("Expected error %s, but got %s", ErrNameShouldContainAtLeastFirstAndLast, err)
 		}
 	})
 
@@ -52,8 +52,8 @@ func TestName(t *testing.T) {
 
 		_, err := NewName(name)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrNameCannotContainNumbers {
+			t.Errorf("Expected error %s, but got %s", ErrNameCannotContainNumbers, err)
 		}
 	})
 
@@ -67,7 +67,7 @@ func TestEmail(t *testing.T) {
 		_, err := NewEmail(email)
 
 		if err != nil {
-			t.Errorf("I was expecting nil, but I got %s", err.Error())
+			t.Errorf("I was expecting nil, but I got %s", err)
 		}
 	})
 
@@ -76,8 +76,8 @@ func TestEmail(t *testing.T) {
 
 		_, err := NewEmail(email)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrEmailCannotBeEmpty {
+			t.Errorf("Expected error %s, but got %s", ErrEmailCannotBeEmpty, err)
 		}
 	})
 
@@ -86,8 +86,8 @@ func TestEmail(t *testing.T) {
 
 		_, err := NewEmail(email)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrInvalidEmailFormat {
+			t.Errorf("Expected error %s, but got %s", ErrInvalidEmailFormat, err)
 		}
 	})
 }
@@ -109,8 +109,8 @@ func TestPassword(t *testing.T) {
 
 		_, err := NewPassword(password)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrPasswordTooShort {
+			t.Errorf("Expected error %s, but got %s", ErrPasswordTooShort, err)
 		}
 	})
 
@@ -119,8 +119,8 @@ func TestPassword(t *testing.T) {
 
 		_, err := NewPassword(password)
 
-		if err == nil {
-			t.Error("I was expecting an error, but I got nil.")
+		if err != ErrPasswordCannotBeEmpty {
+			t.Errorf("Expected error %s, but got %s", ErrPasswordCannotBeEmpty, err)
 		}
 	})
 }

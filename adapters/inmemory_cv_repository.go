@@ -8,9 +8,9 @@ type InmemoryCVRepository struct {
 
 func NewInmemoryCVRepository() *InmemoryCVRepository {
 	return &InmemoryCVRepository{cvs: map[string]domain.CV{
-		"CV001": domain.NewCV("CV001", domain.Criado),
-		"CV002": domain.NewCV("CV002", domain.Validado),
-		"CV003": domain.NewCV("CV003", domain.Submetido),
+		"CV001": domain.NewCV("CV001", domain.CRIADO),
+		"CV002": domain.NewCV("CV002", domain.VALIDADO),
+		"CV003": domain.NewCV("CV003", domain.SUBMETIDO),
 	}}
 }
 

@@ -11,8 +11,8 @@ type ID struct {
 }
 
 func NewID() (ID, error) {
-	rand.Seed(time.Now().UnixNano())
-	randomNum := rand.Intn(1000)
+	random :=rand.New(rand.NewSource(time.Now().UnixNano()))
+	randomNum := random.Intn(1000)
 	newValue := fmt.Sprintf("Cand%03d", randomNum)
 
 	return ID{value: newValue}, nil

@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"errors"
 	"regexp"
 	"strings"
 )
@@ -14,16 +13,16 @@ func NewName(value string) (Name, error) {
 	value = strings.TrimSpace(value)
 
 	if value == "" {
-		return Name{}, errors.New("name cannot be empty or only spaces")
+		return Name{}, ErrNameCannotBeEmpty
 	}
 
 	if matched, _ := regexp.MatchString(`[0-9]`, value); matched {
-		return Name{}, errors.New("name cannot contain numbers")
+		return Name{}, ErrNameCannotContainNumbers
 	}
 
 	parts := strings.Fields(value)
 	if len(parts) < 2 {
-		return Name{}, errors.New("name Should contain at least first name and last name")
+		return Name{}, ErrNameShouldContainAtLeastFirstAndLast
 	}
 
 	return Name{value: value}, nil

@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"errors"
-
 	"github.com/kindalus/godx/pkg/event"
 )
 
@@ -11,7 +9,7 @@ type Candidate struct {
 	name     Name
 	email    Email
 	password Password
-	cvId     string
+	cvId     CVId
 	events   []event.Event
 }
 
@@ -19,13 +17,11 @@ type CandidatePayload struct {
 	id       ID
 	name     Name
 	email    Email
-	cvId     string
+	cvId     CVId
 }
 
 
-func NewCandidate(name Name, email Email, password Password, cvId string) (Candidate, error) {
-
-	if cvId == "" {	return Candidate{}, errors.New("CVId cannot be empty") }
+func NewCandidate(name Name, email Email, password Password, cvId CVId) (Candidate, error) {
 
 	id, err := NewID()
 	if err != nil {	return Candidate{}, err }

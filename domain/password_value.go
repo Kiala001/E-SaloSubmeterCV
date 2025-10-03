@@ -1,18 +1,16 @@
 package domain
 
-import "errors"
-
 type Password struct {
 	hash string
 }
 
 func NewPassword(hash string) (Password, error) {
 	if hash == "" {
-		return Password{}, errors.New("password hash cannot be empty")
+		return Password{}, ErrPasswordCannotBeEmpty
 	}
 
 	if len(hash) < 6 {
-		return Password{}, errors.New("password hash Should be at least 6 characters long")
+		return Password{}, ErrPasswordTooShort
 	}
 
 	return Password{hash: hash}, nil

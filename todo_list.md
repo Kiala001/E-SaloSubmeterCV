@@ -1,10 +1,24 @@
 # Tarefas
 
+### 03 Outubro 2025
+
+- Nomeclatura das const do status (x)
+- Revisar as descrições dos testes (x)
+- Renomear os arquivos vo para value (x)
+- Remover testes que não fazem sentido (x)
+- Personalizar os erros (x)
+- Usar erros personalizados nos testes (x)
+- Adicionar CVID como value object (x)
+
+#### Do dia anterior (Não concluídas)
+
+- Refatoração do código ()
+
 ### 02 Outubro 2025
 
 #### Novas
 
-- Implementação de novos testes ()
+- Implementação de novos testes (x)
  
 
 #### Do dia anterior (Não concluídas)

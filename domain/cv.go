@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"errors"
-
 	"github.com/kindalus/godx/pkg/event"
 )
 
@@ -20,29 +18,29 @@ func NewCV(id string, status CVStatus) CV {
 }
 
 func (c *CV) Validate() error {
-	if c.status == Validado {
-		return errors.New("CV already validated")
+	if c.status == VALIDADO {
+		return ErrCVAlreadyValidated
 	}
 
-	if c.status == Submetido {
-		return errors.New("Cannot validate a CV that is already submitted")
+	if c.status == SUBMETIDO {
+		return ErrCannotValidateCV
 	}
 
-	c.status = Validado
+	c.status = VALIDADO
 	c.AddEvent("CVValidado")
 	return nil
 }
 
 func (c *CV) Submit() error {
-	if c.status == Submetido {
-		return errors.New("CV already submitted")
+	if c.status == SUBMETIDO {
+		return ErrCVAlreadySubmitted
 	}
 
-	if c.status != Validado {
-		return errors.New("CV must be  validated  before submission")
+	if c.status != VALIDADO {
+		return ErrCannotSubmitCV
 	}
 
-	c.status = Submetido
+	c.status = SUBMETIDO
 	c.AddEvent("CVSubmetido")
 	return nil
 }
